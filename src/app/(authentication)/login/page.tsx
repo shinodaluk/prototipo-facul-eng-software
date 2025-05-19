@@ -17,7 +17,7 @@ const Login = () => {
         <TextField variant="outlined" size="small" fullWidth placeholder="e-mail" type="email"/>
       </div>
       <div className="mb-4">
-        <p className="text-sm mb-2 font-semibold text-[#333335]">Senha<a href="#" className="float-end text-red-400">Esqueceu a senha?</a></p>
+        <p className="text-sm mb-2 font-semibold text-[#333335]">Senha<a href="/recuperar-conta" className="float-end text-red-400">Esqueceu a senha?</a></p>
         <TextField variant="outlined" size="small" fullWidth placeholder="senha" type="password"/>
         <FormControlLabel required control={<Checkbox size="small"/>} label="Lembrar da senha?" slotProps={{
           typography: {
