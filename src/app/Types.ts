@@ -1,0 +1,1 @@
+export type FormState = { success: boolean; error?: string, fieldsErrors?: {[key: string]: string} };
