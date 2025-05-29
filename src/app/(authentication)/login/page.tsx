@@ -7,14 +7,16 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import delay from "lodash/delay";
-import random from "lodash/random";
 import Alert from "@mui/material/Alert";
 import { useNotifications } from "@toolpad/core/useNotifications";
 import { FormState } from "@/app/Types";
+import { useAtomValue } from "jotai";
+import { errorAllAtom } from "@/state/atoms";
 
 const Login = () => {
     const notifications = useNotifications();
     const router = useRouter();
+    const errorAll = useAtomValue(errorAllAtom);
 
     const [state, submitAction, isPending] = useActionState<FormState | null, FormData>(async (_, formData) => {
         if (!formData.get("email")) {
@@ -27,13 +29,13 @@ const Login = () => {
 
         const loader = new Promise<FormState>((resolve) => {
             delay(async () => {
-                random(1, 6) > 3
+                errorAll
                     ? resolve({
-                          success: true,
-                      })
-                    : resolve({
                           success: false,
                           error: "Error no servidor",
+                      })
+                    : resolve({
+                          success: true,
                       });
             }, 2000);
         });

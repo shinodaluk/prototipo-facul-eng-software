@@ -9,10 +9,13 @@ import random from "lodash/random";
 import Alert from "@mui/material/Alert";
 import { useNotifications } from "@toolpad/core/useNotifications";
 import { FormState } from "@/app/Types";
+import { useAtomValue } from "jotai";
+import { errorAllAtom } from "@/state/atoms";
 
 const RecuperarConta = () => {
     const notifications = useNotifications();
     const router = useRouter();
+    const errorAll = useAtomValue(errorAllAtom);
 
     const [state, submitAction, isPending] = useActionState<FormState | null, FormData>(async (_, formData) => {
         if (!formData.get("email")) {
@@ -21,13 +24,13 @@ const RecuperarConta = () => {
 
         const loader = new Promise<FormState>((resolve) => {
             delay(async () => {
-                random(1, 6) > 3
+                errorAll
                     ? resolve({
-                          success: true,
-                      })
-                    : resolve({
                           success: false,
                           error: "Error no servidor",
+                      })
+                    : resolve({
+                          success: true,
                       });
             }, 2000);
         });
