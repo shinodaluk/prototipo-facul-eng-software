@@ -7,18 +7,29 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { useAtom } from "jotai";
-import { userTypeAtom } from "@/state/atoms";
+import { errorAllAtom, userTypeAtom } from "@/state/atoms";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
 const Layout = ({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) => {
-
+    const [errorAll, setErrorAll] = useAtom(errorAllAtom);
     const [userType, setUserType] = useAtom(userTypeAtom);
 
     const toolbarActions = useCallback(() => (
         <Stack direction="row" gap={2}>
+            <FormControlLabel
+                control={<Checkbox size="small" name="remember" checked={errorAll} onChange={() => setErrorAll(!errorAll)} />}
+                label="Falhar"
+                slotProps={{
+                    typography: {
+                        className: "text-gray-500 text-sm font-normal",
+                    },
+                }}
+            />
             <TextField select label="Tipo de Usuário" value={userType} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setUserType(event.target.value as "dev" | "adm" | "geral");
             }} size="small">
@@ -34,7 +45,7 @@ const Layout = ({
             </TextField>
             <ThemeSwitcher />
         </Stack>
-    ), [userType]);
+    ), [userType, errorAll]);
 
     return (
         <DashboardLayout

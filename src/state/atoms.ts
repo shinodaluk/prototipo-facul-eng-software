@@ -1,4 +1,8 @@
 import { atom } from "jotai"
 
 export const errorAllAtom = atom(false);
-export const userTypeAtom = atom<"dev" | "adm" | "geral">("geral");
+errorAllAtom.debugLabel = "errorAllAtom"
+
+export type UserTypes = "dev" | "adm" | "geral";
+export const userTypeAtom = atom<UserTypes>("geral");
+userTypeAtom.debugLabel = "userTypeAtom"
