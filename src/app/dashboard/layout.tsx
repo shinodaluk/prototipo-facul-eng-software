@@ -40,25 +40,25 @@ const Layout = ({
             <NextAppProvider
                 navigation={[
                     {
-                        segment: "",
+                        segment: "dashboard",
                         title: "Home",
                         icon: <HomeIcon />,
                     },
                     ...isDev([
                         {
-                            segment: "empresas",
+                            segment: "dashboard/empresas",
                             title: "Empresas",
                             icon: <BusinessIcon />,
                         },
                         {
-                            segment: "usuarios-administrativos",
+                            segment: "dashboard/usuarios-administrativos",
                             title: "Usuários Administrativos",
                             icon: <PeopleIcon />,
                         },
                     ]),
                     ...isAdmin([
                         {
-                            segment: "usuarios-solicitantes",
+                            segment: "dashboard/usuarios-solicitantes",
                             title: "Usuários Solicitantes",
                             icon: <PeopleIcon />,
                         },
@@ -66,22 +66,22 @@ const Layout = ({
                     ...isUsers(
                         [
                             {
-                                segment: "equipamentos",
+                                segment: "dashboard/equipamentos",
                                 title: "Equipamentos e Insumos",
                                 icon: <BlenderIcon />,
                             },
                             {
-                                segment: "emprestimos",
+                                segment: "dashboard/emprestimos",
                                 title: "Empréstimos",
                                 icon: <WorkHistoryIcon />,
                             },
                             {
-                                segment: "relatorios",
+                                segment: "dashboard/relatorios",
                                 title: "Relatórios",
                                 icon: <SummarizeIcon />,
                             },
                             {
-                                segment: "ocorrencias",
+                                segment: "dashboard/ocorrencias",
                                 title: "Ocorrências",
                                 icon: <GavelIcon />,
                             },
@@ -90,19 +90,19 @@ const Layout = ({
                     ),
                     ...isAdmin([
                         {
-                            segment: "solicitacoes",
+                            segment: "dashboard/solicitacoes",
                             title: "Solicitações",
                             icon: <ListAltIcon />,
                         },
                     ]),
                     {
-                        segment: "perfil",
+                        segment: "dashboard/perfil",
                         title: "Perfil",
                         icon: <ManageAccountsIcon />,
                     },
                     ...isAdmin([
                         {
-                            segment: "applicativo-de-rastreio",
+                            segment: "dashboard/applicativo-de-rastreio",
                             title: "Aplicativo de Rastreio",
                             icon: <QrCodeScannerIcon />,
                         },
