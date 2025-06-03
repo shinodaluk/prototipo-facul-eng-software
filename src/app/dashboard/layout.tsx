@@ -18,6 +18,7 @@ import { userTypeAtom } from "@/state/atoms";
 import { DevTools } from "jotai-devtools";
 import { isAdmin, isDev, isUser, isUsers } from "@/utils/menu-utils";
 import "jotai-devtools/styles.css";
+import "./layout.css";
 
 const Layout = ({
     children,

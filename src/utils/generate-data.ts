@@ -56,7 +56,7 @@ export const GenerateData = async () => {
 
         defaultStore.set(usuarioDesenvolvedorAtom, userDevs);
 
-        const empresasArray = faker.helpers.uniqueArray(faker.company.name, 20);
+        const empresasArray = faker.helpers.uniqueArray(faker.company.name, faker.number.int({ min: 10, max: 30 }));
 
         const empresas: Empresa[] = [];
         const userAdms: UsuarioAdministrador[] = [];
@@ -72,7 +72,7 @@ export const GenerateData = async () => {
         const equipEmprestimoEmp: EquipEmprestimo[] = [];
 
         for (const empresaNome of empresasArray) {
-            const empresaId = empresasArray.indexOf(empresaNome) + 1;
+            const empresaId = 1 + empresas.length;
             empresas.push({
                 id_empre: empresaId,
                 nome_empre: empresaNome,
@@ -80,12 +80,12 @@ export const GenerateData = async () => {
                 status: true,
             });
 
-            const userAdmEmailArray = faker.helpers.uniqueArray(faker.internet.email, 10);
+            const userAdmEmailArray = faker.helpers.uniqueArray(faker.internet.email, faker.number.int({ min: 2, max: 20 }));
             const userAdmBuffer: UsuarioAdministrador[] = [];
 
             for (const userAdmEmail of userAdmEmailArray) {
                 const user = {
-                    id_adm: userAdmEmailArray.indexOf(userAdmEmail) + 1,
+                    id_adm: 1 + userAdms.length,
                     nome_adm: faker.person.fullName(),
                     login: userAdmEmail,
                     senha: faker.internet.password(),
@@ -102,7 +102,7 @@ export const GenerateData = async () => {
             const ocorrenciasBuffer: Ocorrencias[] = [];
 
             for (const equipamentoNome of equipamentosArray) {
-                const equipamentoId = equipamentosArray.indexOf(equipamentoNome) + 1;
+                const equipamentoId = 1 + equipamentos.length;
                 const equipamento = {
                     id_eqp: equipamentoId,
                     nome_eqp: equipamentoNome,
@@ -115,7 +115,7 @@ export const GenerateData = async () => {
 
                 for (const ocorrenciaNome of ocorrenciasArray) {
                     const ocorrencia = {
-                        id_oc: ocorrenciasArray.indexOf(ocorrenciaNome) + 1,
+                        id_oc: 1 + ocorrencias.length,
                         titulo: ocorrenciaNome,
                         descriacao_oc: faker.lorem.sentence(),
                         status: true,
@@ -131,7 +131,7 @@ export const GenerateData = async () => {
 
             for (const relatorioNome of relatoriosArray) {
                 relatorios.push({
-                    id_rel: ocorrenciasArray.indexOf(relatorioNome) + 1,
+                    id_rel: 1 + relatorios.length,
                     titulo: relatorioNome,
                     conteudo: faker.lorem.sentence(),
                     data_geracao: faker.date.recent({ days: 100 }),
@@ -146,23 +146,23 @@ export const GenerateData = async () => {
                 const isFinished = Boolean(random(1));
 
                 solicitacoes.push({
-                    id_sol: solicitacoesArray.indexOf(solicitacaoNome) + 1,
+                    id_sol: 1 + solicitacoes.length,
                     titulo: solicitacaoNome,
                     descricao: faker.lorem.sentence(),
                     status: true,
                     data_sol: solDate,
                     resposta: isFinished ? faker.lorem.paragraph() : "",
-                    data_finalizacao: isFinished ? faker.date.recent({ days: 10, refDate: solDate }) : null,
+                    data_finalizacao: isFinished ? faker.date.soon({ days: 30, refDate: solDate }) : null,
                     id_empre: empresaId,
                 });
             }
 
-            const userGeralEmailArray = faker.helpers.uniqueArray(faker.internet.email, 10);
+            const userGeralEmailArray = faker.helpers.uniqueArray(faker.internet.email, faker.number.int({ min: 1, max: 30 }));
             const userGeralBuffer: UsuarioGeral[] = [];
 
             for (const userGeralEmail of userGeralEmailArray) {
                 const user = {
-                    id_usug: userGeralEmailArray.indexOf(userGeralEmail) + 1,
+                    id_usug: 1 + userGeral.length,
                     email: userGeralEmail,
                     senha: faker.internet.password(),
                     nome: faker.person.fullName(),
@@ -173,10 +173,10 @@ export const GenerateData = async () => {
                 userGeralBuffer.push(user);
             }
 
-            const emprestimosArray = faker.helpers.uniqueArray(faker.internet.email, 10);
+            const emprestimosArray = faker.helpers.uniqueArray(faker.internet.email, faker.number.int({ min: 5, max: 30 }));
 
             for (const emprestimoNome of emprestimosArray) {
-                const id = emprestimosArray.indexOf(emprestimoNome) + 1;
+                const id = 1 + emprestimos.length;
                 const empDate = faker.date.recent({ days: 100 });
                 const isFuture = Boolean(random(1));
 
@@ -213,8 +213,8 @@ export const GenerateData = async () => {
 
             for (const documentacaoNome of documentacaoArray) {
                 documentacoes.push({
-                    id_doc: documentacaoArray.indexOf(documentacaoNome) + 1,
-                    link: `${faker.internet.url({ appendSlash: true })}${faker.system.fileName()}`,
+                    id_doc: 1 + documentacoes.length,
+                    link: `${faker.internet.url({ appendSlash: true })}${faker.system.fileName({ extensionCount: 0 })}.pdf`,
                     status: true,
                     titulo: documentacaoNome,
                     id_empre: empresaId,

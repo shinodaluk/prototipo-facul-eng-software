@@ -1,5 +1,5 @@
-import { UsuarioAdministrador } from "@/app/Types";
-import { usuarioAdministradorAtom } from "@/state/atoms";
+import { UsuarioGeral } from "@/app/Types";
+import { usuarioGeralAtom } from "@/state/atoms";
 import { GridColDef, GridRowIdGetter } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import { useAtomValue } from "jotai";
@@ -8,15 +8,15 @@ import Chip from "@mui/material/Chip";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 
-const UsuariosAdminTabela = ({ id }: { id: number }) => {
-    const usuariosAdm = useAtomValue(usuarioAdministradorAtom);
-    const usuariosAdmEmpresa = usuariosAdm.filter((usuario) => usuario.id_empre === id);
+const UsuariosGeralTabela = ({ id }: { id: number }) => {
+    const usuariosGeral = useAtomValue(usuarioGeralAtom);
+    const usuariosGeralEmpresa = usuariosGeral.filter((usuario) => usuario.id_empre === id);
 
-    const columns: GridColDef<UsuarioAdministrador>[] = useMemo(
+    const columns: GridColDef<UsuarioGeral>[] = useMemo(
         () => [
-            { field: "id_adm", headerName: "ID", width: 50 },
-            { field: "nome_adm", headerName: "Nome", flex: 1 },
-            { field: "login", headerName: "E-mail", flex: 1 },
+            { field: "id_usug", headerName: "ID", width: 50 },
+            { field: "nome", headerName: "Nome", flex: 1 },
+            { field: "email", headerName: "E-mail", flex: 1 },
             {
                 field: "status",
                 headerName: "Status",
@@ -33,11 +33,11 @@ const UsuariosAdminTabela = ({ id }: { id: number }) => {
         []
     );
 
-    const getRowId: GridRowIdGetter<UsuarioAdministrador> = useCallback((row) => row.id_adm, []);
+    const getRowId: GridRowIdGetter<UsuarioGeral> = useCallback((row) => row.id_usug, []);
 
     return (
         <DataGrid
-            rows={usuariosAdmEmpresa}
+            rows={usuariosGeralEmpresa}
             columns={columns}
             getRowId={getRowId}
             initialState={{
@@ -49,4 +49,4 @@ const UsuariosAdminTabela = ({ id }: { id: number }) => {
     );
 };
 
-export default UsuariosAdminTabela;
+export default UsuariosGeralTabela;

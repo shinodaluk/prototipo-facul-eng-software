@@ -11,12 +11,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import { maskBr } from "js-brasil";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import EmpresaModal from "@/components/empresa-modal";
+import { PageContainer, PageHeaderToolbar, PageHeader } from "@toolpad/core/PageContainer";
+import Button from "@mui/material/Button";
+import EditarEmpresa from "@/components/editar-empresa";
 
 export default function Page() {
     const [empresas, setEmpresas] = useAtom(empresaAtom);
-    const [id, setId] = useState<number | null>(null);
+    const [viewId, setViewId] = useState<number | null>(null);
+    const [editId, setEditId] = useState<number | null | undefined>(undefined);
 
     const toggleStatus = useCallback(
         (id: number) => {
@@ -52,7 +56,7 @@ export default function Page() {
                         <IconButton
                             size="small"
                             onClick={() => {
-                                setId(row.id_empre);
+                                setViewId(row.id_empre);
                             }}
                         >
                             <VisibilityIcon />
@@ -60,7 +64,7 @@ export default function Page() {
                         <IconButton
                             size="small"
                             onClick={() => {
-                                setId(row.id_empre);
+                                setEditId(row.id_empre);
                             }}
                         >
                             <EditIcon />
@@ -74,10 +78,26 @@ export default function Page() {
 
     const getRowId: GridRowIdGetter<any> = useCallback((row) => row.id_empre, []);
 
+    const CustomPageToolbarComponent = useCallback(() => (<PageHeaderToolbar>
+        <Button variant="contained" onClick={() => setEditId(null)}>Cadastrar</Button>
+    </PageHeaderToolbar>), [])
+
+    const PageHeaderCustom = useCallback(() => <PageHeader slots={{ toolbar: CustomPageToolbarComponent }} />, [CustomPageToolbarComponent])
+
     return (
-        <>
-            <DataGrid rows={empresas} columns={columns} getRowId={getRowId} />
-            {id && <EmpresaModal id={id} handleClose={() => setId(null)} />}
-        </>
+        <PageContainer slots={{ header: PageHeaderCustom }}>
+            <DataGrid
+                rows={empresas}
+                columns={columns}
+                getRowId={getRowId}
+                initialState={{
+                    pagination: { paginationModel: { pageSize: 10 } },
+                }}
+                pageSizeOptions={[10, 20]}
+                showToolbar
+            />
+            {viewId && <EmpresaModal id={viewId} handleClose={() => setViewId(null)} />}
+            {editId !== undefined && <EditarEmpresa id={editId} handleClose={() => setEditId(undefined)} />}
+        </PageContainer>
     );
 }

@@ -1,5 +1,5 @@
-import { UsuarioAdministrador } from "@/app/Types";
-import { usuarioAdministradorAtom } from "@/state/atoms";
+import { Ocorrencias } from "@/app/Types";
+import { equipamentoAtom, ocorrenciaAtom } from "@/state/atoms";
 import { GridColDef, GridRowIdGetter } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import { useAtomValue } from "jotai";
@@ -8,36 +8,38 @@ import Chip from "@mui/material/Chip";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 
-const UsuariosAdminTabela = ({ id }: { id: number }) => {
-    const usuariosAdm = useAtomValue(usuarioAdministradorAtom);
-    const usuariosAdmEmpresa = usuariosAdm.filter((usuario) => usuario.id_empre === id);
+const OcorrenciasTabela = ({ id }: { id: number }) => {
+    const ocorrenciasGeral = useAtomValue(ocorrenciaAtom);
+    const ocorrenciasEmpresa = ocorrenciasGeral.filter((ocor) => ocor.id_oc === id);
 
-    const columns: GridColDef<UsuarioAdministrador>[] = useMemo(
+    const columns: GridColDef<Ocorrencias>[] = useMemo(
         () => [
-            { field: "id_adm", headerName: "ID", width: 50 },
-            { field: "nome_adm", headerName: "Nome", flex: 1 },
-            { field: "login", headerName: "E-mail", flex: 1 },
+            { field: "id_oc", headerName: "ID", width: 50 },
+            { field: "titulo", headerName: "Titulo", flex: 1 },
+            { field: "descriacao_oc", headerName: "Descrição", flex: 1 },
             {
                 field: "status",
                 headerName: "Status",
                 maxWidth: 120,
                 flex: 1,
-                renderCell: ({ row }) =>
-                    row.status ? (
+                renderCell: ({ row }) => {
+
+                    return row.status ? (
                         <Chip icon={<CheckIcon />} label="Habilitado" color="success" size="small" />
                     ) : (
-                        <Chip icon={<CloseIcon />} label="Desabilitado" color="error" size="small" />
-                    ),
+                        <Chip icon={<CloseIcon />} label="Desabilitado" color="default" size="small" />
+                    );
+                },
             },
         ],
         []
     );
 
-    const getRowId: GridRowIdGetter<UsuarioAdministrador> = useCallback((row) => row.id_adm, []);
+    const getRowId: GridRowIdGetter<Ocorrencias> = useCallback((row) => row.id_oc, []);
 
     return (
         <DataGrid
-            rows={usuariosAdmEmpresa}
+            rows={ocorrenciasEmpresa}
             columns={columns}
             getRowId={getRowId}
             initialState={{
@@ -49,4 +51,4 @@ const UsuariosAdminTabela = ({ id }: { id: number }) => {
     );
 };
 
-export default UsuariosAdminTabela;
+export default OcorrenciasTabela;

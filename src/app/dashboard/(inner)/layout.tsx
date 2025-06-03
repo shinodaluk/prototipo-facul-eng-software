@@ -82,7 +82,7 @@ const Layout = ({
                 toolbarActions,
             }}
         >
-            <PageContainer>{children}</PageContainer>
+            {children}
         </DashboardLayout>
     );
 };
