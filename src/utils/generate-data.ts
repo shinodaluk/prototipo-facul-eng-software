@@ -97,7 +97,6 @@ export const GenerateData = async () => {
             }
 
             const equipamentosArray = faker.helpers.uniqueArray(faker.commerce.product, faker.number.int({ min: 5, max: 100 }));
-            const ocorrenciasArray = faker.helpers.uniqueArray(faker.lorem.paragraph, faker.number.int({ min: 5, max: 20 }));
             const equipamentoBuffer: Equipamentos[] = [];
             const ocorrenciasBuffer: Ocorrencias[] = [];
 
@@ -113,12 +112,14 @@ export const GenerateData = async () => {
                 equipamentos.push(equipamento);
                 equipamentoBuffer.push(equipamento);
 
+                const ocorrenciasArray = faker.helpers.uniqueArray(faker.lorem.paragraph, faker.number.int({ min: 0, max: 10 }));
+
                 for (const ocorrenciaNome of ocorrenciasArray) {
                     const ocorrencia = {
                         id_oc: 1 + ocorrencias.length,
                         titulo: ocorrenciaNome,
                         descriacao_oc: faker.lorem.sentence(),
-                        status: true,
+                        status: Boolean(random(1)),
                         id_eqp: equipamentoId,
                     };
 
@@ -179,7 +180,7 @@ export const GenerateData = async () => {
                 const id = 1 + emprestimos.length;
                 const empDate = faker.date.recent({ days: 100 });
                 const isFuture = Boolean(random(1));
-                const devDate = isFuture ? faker.date.soon({ days: 90 }) : faker.date.recent({ days: 10, refDate: empDate })
+                const devDate = isFuture ? (random(1) ? faker.date.soon({ days: 90 }) : faker.date.recent({ days: 10})) : faker.date.recent({ days: 10, refDate: empDate })
 
                 emprestimos.push({
                     id_emp: id,

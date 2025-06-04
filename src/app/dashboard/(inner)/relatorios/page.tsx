@@ -2,52 +2,44 @@
 
 import { DataGrid, GridColDef, GridRowIdGetter } from "@mui/x-data-grid";
 import { useCallback, useMemo, useState } from "react";
-import Chip from "@mui/material/Chip";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
-import { useAtom, useAtomValue } from "jotai";
-import { empresaIdAtom, equipamentoAtom } from "@/state/atoms";
-import { Equipamentos } from "@/app/Types";
+import { useAtomValue } from "jotai";
+import { empresaIdAtom, relatorioAtom, userTypeAtom, usuarioIdAtom } from "@/state/atoms";
+import { Relatorios } from "@/app/Types";
 import { PageContainer, PageHeader, PageHeaderToolbar } from "@toolpad/core/PageContainer";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import EditIcon from "@mui/icons-material/Edit";
-import EditarEquipamento from "@/components/editar-equipamento";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from '@mui/icons-material/Delete';
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 export default function Page() {
     const empresa = useAtomValue(empresaIdAtom);
-    const [equipamentoGeral, setEquipamentoGeral] = useAtom(equipamentoAtom);
+    const relatiosGeral = useAtomValue(relatorioAtom);
     const [editId, setEditId] = useState<number | null | undefined>(undefined);
+        
+    const userType = useAtomValue(userTypeAtom);
+    const user = useAtomValue(usuarioIdAtom);
 
-    const toggleStatus = useCallback(
-        (id: number) => {
-            setEquipamentoGeral(equipamentoGeral.map((equip) => (equip.id_eqp === id ? { ...equip, status: !equip.status } : equip)));
-        },
-        [equipamentoGeral]
-    );
+    const rows = useMemo(() => {
+        return relatiosGeral.filter((equip) => equip.id_empre === empresa);
+    } , [relatiosGeral, empresa, userType, user]);
 
-    const columns: GridColDef<Equipamentos>[] = useMemo(
+    const columns: GridColDef<Relatorios>[] = useMemo(
         () => [
-            { field: "id_eqp", headerName: "ID", width: 50 },
-            { field: "nome_eqp", headerName: "Nome", flex: 1 },
-            { field: "descricao", headerName: "Descrição", flex: 1 },
+            { field: "id_rel", headerName: "ID", width: 50 },
+            { field: "titulo", headerName: "Título", flex: 1 },
+            { field: "conteudo", headerName: "Conteúdo", flex: 1 },
             {
-                field: "status",
-                headerName: "Status",
-                maxWidth: 120,
+                field: "data_geracao",
+                headerName: "Data",
                 flex: 1,
-                renderCell: ({ row }) =>
-                    row.status ? (
-                        <Chip icon={<CheckIcon />} label="Habilitado" color="success" size="small" onClick={() => toggleStatus(row.id_eqp)} />
-                    ) : (
-                        <Chip icon={<CloseIcon />} label="Desabilitado" color="error" size="small" onClick={() => toggleStatus(row.id_eqp)} />
-                    ),
+                renderCell: ({ row }) => {
+                    const date = new Date(row.data_geracao);
+                    return date.toLocaleDateString("pt-BR", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                    });
+                },
             },
             {
                 field: "options",
@@ -61,44 +53,20 @@ export default function Page() {
                         >
                             <VisibilityIcon />
                         </IconButton>
-                        <IconButton
-                            size="small"
-                            onClick={() => {
-                                setEditId(row.id_eqp);
-                            }}
-                        >
-                            <EditIcon />
-                        </IconButton>
-                        <IconButton size="small" color="error">
+                        {userType === "adm" && <IconButton size="small" color="error">
                             <DeleteIcon />
-                        </IconButton>
-                        <PopupState variant="popover" popupId="demoMenu">
-                            {(popupState) => (
-                                <>
-                                    <IconButton {...bindTrigger(popupState)}>
-                                        <MoreVertIcon />
-                                    </IconButton>
-                                    <Menu {...bindMenu(popupState)}>
-                                        <MenuItem onClick={popupState.close}>Documentação</MenuItem>
-                                        <MenuItem onClick={popupState.close}>Rastreio</MenuItem>
-                                        <MenuItem onClick={popupState.close}>Relatórios</MenuItem>
-                                        <MenuItem onClick={popupState.close}>Solicitações</MenuItem>
-                                        <MenuItem onClick={popupState.close}>Ocorrências</MenuItem>
-                                    </Menu>
-                                </>
-                            )}
-                        </PopupState>
+                        </IconButton>}
                     </>
                 ),
             },
         ],
-        [toggleStatus]
+        []
     );
 
-    const getRowId: GridRowIdGetter<Equipamentos> = useCallback((row) => row.id_eqp, []);
+    const getRowId: GridRowIdGetter<Relatorios> = useCallback((row) => row.id_rel, []);
 
     const CustomPageToolbarComponent = useCallback(() => (<PageHeaderToolbar>
-        <Button variant="contained" onClick={() => setEditId(null)}>Cadastrar</Button>
+        <Button variant="contained" onClick={() => setEditId(null)}>Novo Relatório</Button>
     </PageHeaderToolbar>), [])
 
     const PageHeaderCustom = useCallback(() => <PageHeader slots={{ toolbar: CustomPageToolbarComponent }} />, [CustomPageToolbarComponent])
@@ -106,7 +74,7 @@ export default function Page() {
     return (
         <PageContainer slots={{ header: PageHeaderCustom }}>
             <DataGrid
-                rows={equipamentoGeral.filter((equip) => equip.id_empre === empresa)}
+                rows={rows}
                 columns={columns}
                 getRowId={getRowId}
                 initialState={{
@@ -115,7 +83,6 @@ export default function Page() {
                 pageSizeOptions={[10, 20]}
                 showToolbar
             />
-            {editId !== undefined && <EditarEquipamento id={editId} handleClose={() => setEditId(undefined)} />}
         </PageContainer>
     );
 }

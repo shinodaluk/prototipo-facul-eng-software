@@ -6,37 +6,63 @@ import Chip from "@mui/material/Chip";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAtom, useAtomValue } from "jotai";
-import { empresaIdAtom, equipamentoAtom } from "@/state/atoms";
-import { Equipamentos } from "@/app/Types";
+import { empresaIdAtom, solicitacaoAtom } from "@/state/atoms";
+import { Solicitacoes } from "@/app/Types";
 import { PageContainer, PageHeader, PageHeaderToolbar } from "@toolpad/core/PageContainer";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
-import EditarEquipamento from "@/components/editar-equipamento";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from '@mui/icons-material/Delete';
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Tooltip from "@mui/material/Tooltip";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 export default function Page() {
     const empresa = useAtomValue(empresaIdAtom);
-    const [equipamentoGeral, setEquipamentoGeral] = useAtom(equipamentoAtom);
+    const [solicitacaoGeral, setSolicitacaoGeral] = useAtom(solicitacaoAtom);
     const [editId, setEditId] = useState<number | null | undefined>(undefined);
 
     const toggleStatus = useCallback(
         (id: number) => {
-            setEquipamentoGeral(equipamentoGeral.map((equip) => (equip.id_eqp === id ? { ...equip, status: !equip.status } : equip)));
+            setSolicitacaoGeral(solicitacaoGeral.map((sol) => (sol.id_sol === id ? { ...sol, status: !sol.status } : sol)));
         },
-        [equipamentoGeral]
+        [solicitacaoGeral]
     );
 
-    const columns: GridColDef<Equipamentos>[] = useMemo(
+    const columns: GridColDef<Solicitacoes>[] = useMemo(
         () => [
-            { field: "id_eqp", headerName: "ID", width: 50 },
-            { field: "nome_eqp", headerName: "Nome", flex: 1 },
+            { field: "id_sol", headerName: "ID", width: 50 },
+            { field: "titulo", headerName: "Título", flex: 1 },
             { field: "descricao", headerName: "Descrição", flex: 1 },
+            { field: "resposta", headerName: "Resposta", flex: 1 },
+            {
+                field: "data_sol",
+                headerName: "Solicitado em",
+                flex: 1,
+                renderCell: ({ row }) => {
+                    const date = new Date(row.data_sol);
+                    return date.toLocaleDateString("pt-BR", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                    });
+                },
+            },
+            {
+                field: "data_finalizacao",
+                headerName: "Finalizado em",
+                flex: 1,
+                renderCell: ({ row }) => {
+                    if(!row.data_finalizacao) return "Pendente";
+
+                    const date = new Date(row.data_finalizacao);
+                    return date.toLocaleDateString("pt-BR", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                    });
+                },
+            },
             {
                 field: "status",
                 headerName: "Status",
@@ -44,9 +70,9 @@ export default function Page() {
                 flex: 1,
                 renderCell: ({ row }) =>
                     row.status ? (
-                        <Chip icon={<CheckIcon />} label="Habilitado" color="success" size="small" onClick={() => toggleStatus(row.id_eqp)} />
+                        <Chip icon={<CheckIcon />} label="Habilitado" color="info" size="small" onClick={() => toggleStatus(row.id_sol)} />
                     ) : (
-                        <Chip icon={<CloseIcon />} label="Desabilitado" color="error" size="small" onClick={() => toggleStatus(row.id_eqp)} />
+                        <Chip icon={<CloseIcon />} label="Cancelado" color="error" size="small" onClick={() => toggleStatus(row.id_sol)} />
                     ),
             },
             {
@@ -64,7 +90,7 @@ export default function Page() {
                         <IconButton
                             size="small"
                             onClick={() => {
-                                setEditId(row.id_eqp);
+                                setEditId(row.id_sol);
                             }}
                         >
                             <EditIcon />
@@ -72,22 +98,15 @@ export default function Page() {
                         <IconButton size="small" color="error">
                             <DeleteIcon />
                         </IconButton>
-                        <PopupState variant="popover" popupId="demoMenu">
-                            {(popupState) => (
-                                <>
-                                    <IconButton {...bindTrigger(popupState)}>
-                                        <MoreVertIcon />
-                                    </IconButton>
-                                    <Menu {...bindMenu(popupState)}>
-                                        <MenuItem onClick={popupState.close}>Documentação</MenuItem>
-                                        <MenuItem onClick={popupState.close}>Rastreio</MenuItem>
-                                        <MenuItem onClick={popupState.close}>Relatórios</MenuItem>
-                                        <MenuItem onClick={popupState.close}>Solicitações</MenuItem>
-                                        <MenuItem onClick={popupState.close}>Ocorrências</MenuItem>
-                                    </Menu>
-                                </>
-                            )}
-                        </PopupState>
+                        {!row.data_finalizacao && (
+                            <Tooltip title="Dar baixa">
+                                <IconButton
+                                    size="small"
+                                >
+                                    <FileDownloadIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
                     </>
                 ),
             },
@@ -95,7 +114,7 @@ export default function Page() {
         [toggleStatus]
     );
 
-    const getRowId: GridRowIdGetter<Equipamentos> = useCallback((row) => row.id_eqp, []);
+    const getRowId: GridRowIdGetter<Solicitacoes> = useCallback((row) => row.id_sol, []);
 
     const CustomPageToolbarComponent = useCallback(() => (<PageHeaderToolbar>
         <Button variant="contained" onClick={() => setEditId(null)}>Cadastrar</Button>
@@ -106,7 +125,7 @@ export default function Page() {
     return (
         <PageContainer slots={{ header: PageHeaderCustom }}>
             <DataGrid
-                rows={equipamentoGeral.filter((equip) => equip.id_empre === empresa)}
+                rows={solicitacaoGeral.filter((equip) => equip.id_empre === empresa)}
                 columns={columns}
                 getRowId={getRowId}
                 initialState={{
@@ -115,7 +134,6 @@ export default function Page() {
                 pageSizeOptions={[10, 20]}
                 showToolbar
             />
-            {editId !== undefined && <EditarEquipamento id={editId} handleClose={() => setEditId(undefined)} />}
         </PageContainer>
     );
 }

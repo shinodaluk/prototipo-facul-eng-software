@@ -10,7 +10,7 @@ import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import { emprestimoAtom, equipamentoAtom, equipEmprestimoAtom } from "@/state/atoms";
 import { EquipEmprestimo } from "@/app/Types";
 
-const VerEmprestimo = ({ id, handleClose, darBaixa }: { id: number; handleClose: () => void; darBaixa: () => void }) => {
+const VerEmprestimo = ({ id, handleClose, darBaixa }: { id: number; handleClose: () => void; darBaixa?: () => void }) => {
     const emprestimos = useAtomValue(emprestimoAtom);
     const emprestimo = emprestimos.find((emp) => emp.id_emp === id)!;
 
@@ -56,7 +56,7 @@ const VerEmprestimo = ({ id, handleClose, darBaixa }: { id: number; handleClose:
             <DialogActions>
                 <Button onClick={handleClose}>Fechar</Button>
                 {
-                    !emprestimo.status && <Button onClick={darBaixa} variant="contained" color="success">Dar Baixa</Button>
+                    !emprestimo.status && darBaixa && <Button onClick={darBaixa} variant="contained" color="success">Dar Baixa</Button>
                 }
                 
             </DialogActions>
