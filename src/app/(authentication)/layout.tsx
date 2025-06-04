@@ -11,6 +11,8 @@ import theme from "../../theme";
 import { DevTools } from "jotai-devtools";
 import "./layout.css";
 import "jotai-devtools/styles.css";
+import logo from '@/../public/equipaplus.svg';
+import Image from "next/image";
 
 const LoginLayout = ({
     children,
@@ -42,9 +44,9 @@ const LoginLayout = ({
                     </div>
                     <div className="flex items-center justify-center h-screen">
                         <div className="max-w-1/4 w-full flex flex-col">
-                            <div className="py-8 flex-none">
+                            <div className="flex-none text-center">
                                 <a href="/">
-                                    <h1 className="text-3xl font-bold text-center">Equipa+</h1>
+                                    <Image src={logo} alt="Logo Equipa+" className="text-center mx-auto"/>
                                 </a>
                             </div>
                             <div className="rounded-lg shadow-lg bg-white p-12 flex-auto">{children}</div>

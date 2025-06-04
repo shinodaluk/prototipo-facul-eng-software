@@ -6,42 +6,37 @@ import Chip from "@mui/material/Chip";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAtom, useAtomValue } from "jotai";
-import { empresaAtom, usuarioAdministradorAtom } from "@/state/atoms";
-import { UsuarioAdministrador } from "@/app/Types";
+import { empresaIdAtom, equipamentoAtom } from "@/state/atoms";
+import { Equipamentos } from "@/app/Types";
 import { PageContainer, PageHeader, PageHeaderToolbar } from "@toolpad/core/PageContainer";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
-import EditarUsuario from "@/components/editar-usuario";
+import EditarEquipamento from "@/components/editar-equipamento";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from '@mui/icons-material/Delete';
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 export default function Page() {
-    const [usuariosAdm, setUsuariosAdm] = useAtom(usuarioAdministradorAtom);
-    const empresasGeral = useAtomValue(empresaAtom);
+    const empresa = useAtomValue(empresaIdAtom);
+    const [equipamentoGeral, setEquipamentoGeral] = useAtom(equipamentoAtom);
     const [editId, setEditId] = useState<number | null | undefined>(undefined);
 
     const toggleStatus = useCallback(
         (id: number) => {
-            setUsuariosAdm(usuariosAdm.map((usuario) => (usuario.id_adm === id ? { ...usuario, status: !usuario.status } : usuario)));
+            setEquipamentoGeral(equipamentoGeral.map((equip) => (equip.id_eqp === id ? { ...equip, status: !equip.status } : equip)));
         },
-        [usuariosAdm]
+        [equipamentoGeral]
     );
 
-    const columns: GridColDef<UsuarioAdministrador>[] = useMemo(
+    const columns: GridColDef<Equipamentos>[] = useMemo(
         () => [
-            { field: "id_adm", headerName: "ID", width: 50 },
-            { field: "nome_adm", headerName: "Nome", flex: 1 },
-            { field: "login", headerName: "E-mail", flex: 1 },
-            {
-                field: "id_empre",
-                headerName: "Empresa",
-                flex: 1,
-                renderCell: ({ row }) => {
-                    const empresa = empresasGeral.find((emp) => emp.id_empre === row.id_empre);
-                    return empresa ? empresa.nome_empre : "Empresa não encontrada";
-                },
-            },
+            { field: "id_eqp", headerName: "ID", width: 50 },
+            { field: "nome_eqp", headerName: "Nome", flex: 1 },
+            { field: "descricao", headerName: "Descrição", flex: 1 },
             {
                 field: "status",
                 headerName: "Status",
@@ -49,15 +44,15 @@ export default function Page() {
                 flex: 1,
                 renderCell: ({ row }) =>
                     row.status ? (
-                        <Chip icon={<CheckIcon />} label="Habilitado" color="success" size="small" onClick={() => toggleStatus(row.id_adm)} />
+                        <Chip icon={<CheckIcon />} label="Habilitado" color="success" size="small" onClick={() => toggleStatus(row.id_eqp)} />
                     ) : (
-                        <Chip icon={<CloseIcon />} label="Desabilitado" color="error" size="small" onClick={() => toggleStatus(row.id_adm)} />
+                        <Chip icon={<CloseIcon />} label="Desabilitado" color="error" size="small" onClick={() => toggleStatus(row.id_eqp)} />
                     ),
             },
             {
                 field: "options",
                 headerName: "Opções",
-                maxWidth: 150,
+                maxWidth: 180,
                 flex: 1,
                 renderCell: ({ row }) => (
                     <>
@@ -69,7 +64,7 @@ export default function Page() {
                         <IconButton
                             size="small"
                             onClick={() => {
-                                setEditId(row.id_adm);
+                                setEditId(row.id_eqp);
                             }}
                         >
                             <EditIcon />
@@ -77,14 +72,30 @@ export default function Page() {
                         <IconButton size="small" color="error">
                             <DeleteIcon />
                         </IconButton>
+                        <PopupState variant="popover" popupId="demoMenu">
+                            {(popupState) => (
+                                <>
+                                    <IconButton {...bindTrigger(popupState)}>
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                    <Menu {...bindMenu(popupState)}>
+                                        <MenuItem onClick={popupState.close}>Documentação</MenuItem>
+                                        <MenuItem onClick={popupState.close}>Rastreio</MenuItem>
+                                        <MenuItem onClick={popupState.close}>Relatórios</MenuItem>
+                                        <MenuItem onClick={popupState.close}>Solicitações</MenuItem>
+                                        <MenuItem onClick={popupState.close}>Ocorrências</MenuItem>
+                                    </Menu>
+                                </>
+                            )}
+                        </PopupState>
                     </>
                 ),
             },
         ],
-        [empresasGeral, toggleStatus]
+        [toggleStatus]
     );
 
-    const getRowId: GridRowIdGetter<UsuarioAdministrador> = useCallback((row) => row.id_adm, []);
+    const getRowId: GridRowIdGetter<Equipamentos> = useCallback((row) => row.id_eqp, []);
 
     const CustomPageToolbarComponent = useCallback(() => (<PageHeaderToolbar>
         <Button variant="contained" onClick={() => setEditId(null)}>Cadastrar</Button>
@@ -95,7 +106,7 @@ export default function Page() {
     return (
         <PageContainer slots={{ header: PageHeaderCustom }}>
             <DataGrid
-                rows={usuariosAdm}
+                rows={equipamentoGeral.filter((equip) => equip.id_empre === empresa)}
                 columns={columns}
                 getRowId={getRowId}
                 initialState={{
@@ -104,7 +115,7 @@ export default function Page() {
                 pageSizeOptions={[10, 20]}
                 showToolbar
             />
-            {editId !== undefined && <EditarUsuario id={editId} handleClose={() => setEditId(undefined)} />}
+            {editId !== undefined && <EditarEquipamento id={editId} handleClose={() => setEditId(undefined)} />}
         </PageContainer>
     );
 }

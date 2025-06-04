@@ -107,7 +107,7 @@ export const GenerateData = async () => {
                     id_eqp: equipamentoId,
                     nome_eqp: equipamentoNome,
                     status: true,
-                    descricao: faker.commerce.product(),
+                    descricao: faker.lorem.paragraph(),
                     id_empre: empresaId,
                 };
                 equipamentos.push(equipamento);
@@ -179,12 +179,13 @@ export const GenerateData = async () => {
                 const id = 1 + emprestimos.length;
                 const empDate = faker.date.recent({ days: 100 });
                 const isFuture = Boolean(random(1));
+                const devDate = isFuture ? faker.date.soon({ days: 90 }) : faker.date.recent({ days: 10, refDate: empDate })
 
                 emprestimos.push({
                     id_emp: id,
                     data_emp: empDate,
-                    data_dev: isFuture ? faker.date.soon({ days: 90 }) : faker.date.recent({ days: 10, refDate: empDate }),
-                    status: true,
+                    data_dev: devDate,
+                    status: !isFuture,
                     id_empre: empresaId,
                     id_adm: faker.helpers.arrayElement(userAdmBuffer).id_adm,
                 });

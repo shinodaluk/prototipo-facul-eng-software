@@ -8,6 +8,6 @@ export default function Home() {
   const router = useRouter()
   
   return (
-    <PageContainer><Typography>Welcome to the orders page!</Typography></PageContainer>
+    <PageContainer><Typography>Bem vindo ao sistema Equipa+!</Typography></PageContainer>
   );
 }

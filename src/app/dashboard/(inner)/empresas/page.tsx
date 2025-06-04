@@ -16,6 +16,7 @@ import EmpresaModal from "@/components/empresa-modal";
 import { PageContainer, PageHeaderToolbar, PageHeader } from "@toolpad/core/PageContainer";
 import Button from "@mui/material/Button";
 import EditarEmpresa from "@/components/editar-empresa";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Page() {
     const [empresas, setEmpresas] = useAtom(empresaAtom);
@@ -49,7 +50,7 @@ export default function Page() {
             {
                 field: "options",
                 headerName: "Opções",
-                maxWidth: 120,
+                maxWidth: 150,
                 flex: 1,
                 renderCell: ({ row }) => (
                     <>
@@ -68,6 +69,9 @@ export default function Page() {
                             }}
                         >
                             <EditIcon />
+                        </IconButton>
+                        <IconButton size="small" color="error">
+                            <DeleteIcon />
                         </IconButton>
                     </>
                 ),

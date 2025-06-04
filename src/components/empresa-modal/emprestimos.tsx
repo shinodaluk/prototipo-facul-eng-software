@@ -37,7 +37,7 @@ const EmprestimosTabela = ({ id }: { id: number }) => {
                 headerName: "Data da devolução",
                 flex: 1,
                 renderCell: ({ row }) => {
-                    const date = new Date(row.data_emp);
+                    const date = new Date(row.data_dev);
                     return date.toLocaleDateString("pt-BR", {
                         year: "numeric",
                         month: "2-digit",

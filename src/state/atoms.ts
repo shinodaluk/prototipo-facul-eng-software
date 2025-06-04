@@ -22,6 +22,12 @@ export type UserTypes = "dev" | "adm" | "geral";
 export const userTypeAtom = atomWithStorage<UserTypes>("userTypeAtom", "geral");
 userTypeAtom.debugLabel = "userTypeAtom";
 
+export const empresaIdAtom = atomWithStorage<number>("empresaIdAtom", 1);
+empresaIdAtom.debugLabel = "empresaIdAtom";
+
+export const usuarioIdAtom = atomWithStorage<number>("usuarioIdAtom", 1);
+usuarioIdAtom.debugLabel = "usuarioIdAtom";
+
 export const isGeneratingAtom = atomWithStorage("isGeneratingAtom", false);
 isGeneratingAtom.debugLabel = "isGeneratingAtom";
 

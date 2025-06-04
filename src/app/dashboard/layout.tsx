@@ -13,12 +13,12 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import GavelIcon from "@mui/icons-material/Gavel";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
-import { useAtomValue } from "jotai";
-import { userTypeAtom } from "@/state/atoms";
 import { DevTools } from "jotai-devtools";
-import { isAdmin, isDev, isUser, isUsers } from "@/utils/menu-utils";
+import { isAdmin, isDev, isUsers } from "@/utils/menu-utils";
 import "jotai-devtools/styles.css";
 import "./layout.css";
+import { useAtomValue } from "jotai";
+import { userTypeAtom } from "@/state/atoms";
 
 const Layout = ({
     children,
@@ -96,11 +96,16 @@ const Layout = ({
                             icon: <ListAltIcon />,
                         },
                     ]),
-                    {
-                        segment: "dashboard/perfil",
-                        title: "Perfil",
-                        icon: <ManageAccountsIcon />,
-                    },
+                    ...isUsers(
+                        [
+                            {
+                                segment: "dashboard/perfil",
+                                title: "Perfil",
+                                icon: <ManageAccountsIcon />,
+                            },
+                        ],
+                        ["adm", "geral"]
+                    ),
                     ...isAdmin([
                         {
                             segment: "dashboard/applicativo-de-rastreio",

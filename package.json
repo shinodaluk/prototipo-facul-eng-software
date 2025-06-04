@@ -23,6 +23,7 @@
     "jotai": "^2.12.5",
     "js-brasil": "^2.6.4",
     "lodash": "^4.17.21",
+    "material-ui-popup-state": "^5.3.6",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
